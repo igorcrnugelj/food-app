@@ -77,5 +77,6 @@ const getFib = (a, b) => {
 };
 getFib(1, 1);
 console.log(...arr);
+console.log("Test");
 
 export default saveProduct;
