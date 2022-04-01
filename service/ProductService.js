@@ -2,6 +2,13 @@ import Product from "../models/Product.js";
 import fetch from "node-fetch";
 import save from "./DatabaseService.js";
 
+const chooseNutrient = function (list, nut) {
+  const testNut = list
+    .flat()
+    .filter((nutrient) => nutrient.nutrientName === nut);
+  return testNut;
+};
+
 const saveProduct = async (foodName) => {
   const { prodName } = foodName;
   const res = await fetch(
@@ -23,22 +30,11 @@ const saveProduct = async (foodName) => {
     .map((prodName) => prodName.description);
   console.log(name);
 
-  const chooseProtein = function (listOfNutrients) {
-    const protein = listOfNutrients
-      .flat()
-      .filter((nutrient) => nutrient.nutrientName === "Protein");
-    return protein;
-  };
-  const chooseSugars = function (listOfNutrients) {
-    return listOfNutrients
-      .flat()
-      .filter(
-        (nutrient) => nutrient.nutrientName === "Sugars, total including NLEA"
-      );
-  };
-
-  const [proto] = chooseProtein(listOfNutrients);
-  const [sugar] = chooseSugars(listOfNutrients);
+  const [proto] = chooseNutrient(listOfNutrients, "Protein");
+  const [sugar] = chooseNutrient(
+    listOfNutrients,
+    "Sugars, total including NLEA"
+  );
   console.log(proto.nutrientName, proto.value);
   console.log(sugar.nutrientName, sugar.value);
 
@@ -57,9 +53,7 @@ export const retProducts = async (foodName) => {
   );
 
   const data = await res.json();
-  //   console.log(data);
 
-  //   const result = data.foods.filter((prod) => prod.description === prodName);
   const result = data.foods.filter((prod) => prod.description);
 
   console.log(result);
@@ -71,12 +65,11 @@ let arr = [1, 1];
 const getFib = (a, b) => {
   c = b + a;
   arr.push(c);
-  while (c < 610) {
+  if (c < 610) {
     getFib(b, c);
   }
 };
 getFib(1, 1);
 console.log(...arr);
-console.log("Test");
 
 export default saveProduct;
