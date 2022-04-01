@@ -1,0 +1,5 @@
+database = food
+username = postgres
+password = post47gre
+hostname = localhost
+dialect = postgres
