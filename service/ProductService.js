@@ -1,6 +1,8 @@
 import Product from "../models/Product.js";
 import fetch from "node-fetch";
 import save from "./DatabaseService.js";
+import PropertiesReader from "properties-reader";
+var properties = PropertiesReader("properties");
 
 const chooseNutrient = function (list, nut) {
   const testNut = list
@@ -12,6 +14,7 @@ const chooseNutrient = function (list, nut) {
 const saveProduct = async (foodName) => {
   const { prodName } = foodName;
   const res = await fetch(
+    // properties.get("foodDataURL")
     `https://api.nal.usda.gov/fdc/v1/foods/search?api_key=${"rc9juMGF98eP8Ck1AbFCFT5tc9P4G7lbW2zdPxx2"}&query=${prodName}`
     // `https://api.nal.usda.gov/fdc/v1/foods/search?api_key=${"rc9juMGF98eP8Ck1AbFCFT5tc9P4G7lbW2zdPxx2"}&query=${product}&dataType${dataType}`
   );
@@ -49,6 +52,7 @@ const saveProduct = async (foodName) => {
 export const retProducts = async (foodName) => {
   const { prodName } = foodName;
   const res = await fetch(
+    // properties.get("foodDataURL")
     `https://api.nal.usda.gov/fdc/v1/foods/search?api_key=${"rc9juMGF98eP8Ck1AbFCFT5tc9P4G7lbW2zdPxx2"}&query=${prodName}`
   );
 

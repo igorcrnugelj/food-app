@@ -9,7 +9,10 @@ const MealsProduct = sequelize.define("MealProduct", {
   product_id: {
     type: Sequelize.INTEGER,
   },
+  quantity: {
+    type: Sequelize.INTEGER,
+  },
 });
 
 export default MealsProduct;
-await Meal.sync();
+await MealsProduct.sync();

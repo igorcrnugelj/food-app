@@ -1,5 +1,6 @@
 import { Sequelize } from "sequelize";
 import sequelize from "../database/pgConnection.js";
+import MealsProduct from "./MealsProduct.js";
 
 const Product = sequelize.define("Product", {
   productName: {
@@ -12,6 +13,12 @@ const Product = sequelize.define("Product", {
   sugar: {
     type: Sequelize.STRING,
   },
+});
+
+Product.hasOne(MealsProduct, {
+  foreignKey: "product_id",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
 });
 
 export default Product;

@@ -8,6 +8,7 @@ import productRoutes from "./routes/ProductRoutes.js";
 import Meal from "./models/Meal.js";
 import MealsProduct from "./models/MealsProduct.js";
 import fiboRoutes from "./routes/FiboRoutes.js";
+import mealRoutes from "./routes/MealRoutes.js";
 
 sequelize.sync();
 
@@ -18,6 +19,7 @@ app.use(bodyParser.json());
 app.use("/users", usersRoutes);
 app.use("/product", productRoutes);
 app.use("/fibo", fiboRoutes);
+app.use("/meal", mealRoutes);
 
 app.listen(port, () =>
   console.log(`Server running on port: http://localhost:${port}`)

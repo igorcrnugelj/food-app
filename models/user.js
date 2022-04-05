@@ -15,10 +15,9 @@ const User = sequelize.define("User", {
 });
 
 User.hasMany(Meal, {
-  foreignKey: "user_id",
-  onDelete: "CASCADE",
-  onUpdate: "CASCADE",
+  foreignKey: "UserId",
 });
+Meal.belongsTo(User);
 
 export default User;
 await User.sync();
