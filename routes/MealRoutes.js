@@ -7,6 +7,7 @@ import { addProductToMeal } from "../service/MealService.js";
 import { addMultipleProductsToMeal } from "../service/MealService.js";
 import MealProduct from "../models/MealsProduct.js";
 import Product from "../models/Product.js";
+import MealsProduct from "../models/MealsProduct.js";
 
 //CREATE MEAL
 router.post("/", async (req, res) => {
@@ -24,7 +25,7 @@ router.post("/add-products", async (req, res) => {
   res.send(`Products added into the database: ${savedProductStringifyed}`);
 });
 
-//GET MEAL BY USER ID
+//GET MEAL BY MEAL ID
 router.get("/:id", async (req, res) => {
   try {
     const { id } = req.params; //here we are making destructuring
@@ -49,15 +50,15 @@ router.get("/:id", async (req, res) => {
       (product) => product.dataValues.protein
     );
 
-    const productsProteinsTotal = productsProteins.reduce(
-      (prev, curr) => prev + curr
+    const sumOfProteins = productsProteins.reduce(
+      (prev, curr) => Number(prev) + Number(curr)
     );
 
     const yourMeal = {
       message: "This is your first meal: ",
       productName: productName,
       protein: productsProteins,
-      proteinsTotal: productsProteinsTotal,
+      proteinsTotal: sumOfProteins,
     };
 
     console.log("************mealProducts********");
@@ -81,6 +82,131 @@ router.get("/:id", async (req, res) => {
     //   const foundUser = users.find((user) => user.id === id);
     //   res.send(foundUser);
     res.send(yourMeal);
+  } catch (error) {
+    res.send(error.message);
+    console.log(error.message);
+  }
+});
+
+//GET MEALS BY USER ID FROM BODY IN POSTMAN
+router.get("/", async (req, res) => {
+  try {
+    const userId = req.body.UserId;
+
+    const meals = await Meal.findAll({
+      where: { UserId: userId },
+      include: MealsProduct,
+    });
+
+    console.log("******************meals**********************");
+    console.log(meals);
+    console.log("******************meals**********************");
+    const mealsId = meals.map((meal) => meal.dataValues.id);
+
+    const productsFromMealsProduct = await MealsProduct.findAll({
+      where: { meal_id: mealsId },
+      include: Product,
+    });
+    // console.log(
+    //   "******************productsFromMealsProduct**********************"
+    // );
+    // console.log(productsFromMealsProduct);
+    // console.log(
+    //   productsFromMealsProduct.map(
+    //     (produ) => produ.dataValues.Product.dataValues.protein
+    //   )
+    // );
+    // console.log(
+    //   "******************productsFromMealsProduct**********************"
+    // );
+
+    productsFromMealsProduct.map((pro) => {
+      pro.dataValues.Product.dataValues.proteinsConsumed =
+        (pro.dataValues.quantity / 100) *
+        pro.dataValues.Product.dataValues.protein;
+    });
+    productsFromMealsProduct.map((pro) => {
+      pro.dataValues.Product.dataValues.sugarsConsumed =
+        (pro.dataValues.quantity / 100) *
+        pro.dataValues.Product.dataValues.sugar;
+    });
+
+    const sumOfProteins = productsFromMealsProduct
+      .map((produ) => produ.dataValues.Product.dataValues.proteinsConsumed)
+      .reduce((prev, curr) => Number(prev) + Number(curr));
+    console.log("******************sumOfProteins**********************");
+    console.log(sumOfProteins);
+    console.log("******************sumOfProteins**********************");
+    const sumOfSugars = productsFromMealsProduct
+      .map((produ) => produ.dataValues.Product.dataValues.sugarsConsumed)
+      .reduce((prev, curr) => Number(prev) + Number(curr));
+    console.log("******************sumOfSugars**********************");
+    console.log(sumOfSugars);
+    console.log("******************sumOfSugars**********************");
+    const yourMeal = {
+      message: "This is your first meal: ",
+      product: Object.values(productsFromMealsProduct),
+
+      proteinsTotal: sumOfProteins,
+      sugarsTotal: sumOfSugars,
+    };
+
+    res.send(yourMeal);
+    // res.send(productsFromMealsProduct);
+
+    // console.log(productsFromMealsProduct);
+
+    // const mealProductsIds = mealProducts.map(
+    //   (mealProduct) => mealProduct.dataValues.product_id
+    // );
+
+    // const infoAboutProducts = mealProducts[0];
+
+    // const products = await Product.findAll({
+    //   where: {
+    //     id: mealProductsIds,
+    //   },
+    // });
+    // const productName = products.map(
+    //   (product) => product.dataValues.productName
+    // );
+    // const productsProteins = products.map(
+    //   (product) => product.dataValues.protein
+    // );
+
+    // const sumOfProteins = productsProteins.reduce(
+    //   (prev, curr) => Number(prev) + Number(curr)
+    // );
+
+    // const yourMeal = {
+    //   message: "This is your first meal: ",
+    //   productName: productName,
+    //   protein: productsProteins,
+    //   proteinsTotal: sumOfProteins,
+    // };
+
+    // console.log("************mealProducts********");
+    // console.log(mealProductsIds);
+    // console.log("************mealProducts********");
+    // console.log("************infoAboutProducts********");
+    // console.log(infoAboutProducts);
+    // console.log(infoAboutProducts.dataValues.product_id);
+    // console.log("************infoAboutProducts********");
+    // console.log("************Products********");
+    // console.log(products);
+    // console.log("Your meal: ", yourMeal);
+    // console.log("************Products********");
+
+    // // const mealByUserId = await Meal.findAll();
+    // //const mealById = await Meal.findByPk(id);
+    // // const meal1 = mealByUserId.filter((meal) => meal.UserId === Number(id));
+    // // console.log("This is the meal by user id:", meal1);
+    // if (!yourMeal) {
+    //   throw new Error(`No meal with such id found in database`);
+    // }
+    //   const foundUser = users.find((user) => user.id === id);
+    //   res.send(foundUser);
+    // res.send(yourMeal);
   } catch (error) {
     res.send(error.message);
     console.log(error.message);

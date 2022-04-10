@@ -20,6 +20,9 @@ Product.hasOne(MealsProduct, {
   onDelete: "CASCADE",
   onUpdate: "CASCADE",
 });
+MealsProduct.belongsTo(Product, {
+  foreignKey: "product_id",
+});
 
 export default Product;
 // await Product.sync();

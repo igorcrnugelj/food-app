@@ -14,6 +14,9 @@ Meal.hasMany(MealsProduct, {
   onDelete: "CASCADE",
   onUpdate: "CASCADE",
 });
+MealsProduct.belongsTo(Meal, {
+  foreignKey: "meal_id",
+});
 
 export default Meal;
 await Meal.sync();

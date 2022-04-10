@@ -22,10 +22,14 @@ const saveProduct = async (foodName) => {
   const data = await res.json();
 
   const result = data.foods.filter((prod) => prod.description === prodName);
-
+  console.log("*******result*********");
   console.log(result);
+  console.log("*******result*********");
 
   const listOfNutrients = Object.entries(result[0].foodNutrients);
+  console.log("*******listOfNutrients*********");
+  console.log(listOfNutrients);
+  console.log("*******listOfNutrients*********");
   const nutrientMeasures = Object.entries(result[0].foodMeasures);
   console.log(nutrientMeasures);
   const [name] = data.foods
